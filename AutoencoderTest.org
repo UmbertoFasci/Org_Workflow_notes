@@ -1,0 +1,220 @@
+#+TITLE: Autoencoder Test
+#+DESCRIPTION: A test of org-mode and my TensorFlow environment and all the necessary adjustments needed for functionality.
+#+AUTHOR: Umberto Fasci
+
+* DONE Imports
+
+#+begin_src python :session :results output
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.model_selection import train_test_split
+from tensorflow.keras import layers, losses
+from tensorflow.keras.datasets import fashion_mnist
+from tensorflow.keras.models import Model
+#+end_src
+
+
+* DONE Data Import (ECG data)
+
+#+begin_src python :session :results output
+dataframe = pd.read_csv('http://storage.googleapis.com/download.tensorflow.org/data/ecg.csv', header=None)
+raw_data = dataframe.values
+print(dataframe.head())
+#+end_src
+
+#+RESULTS:
+:         0         1         2         3         4         5    ...       135       136       137       138       139  140
+: 0 -0.112522 -2.827204 -3.773897 -4.349751 -4.376041 -3.474986  ...  0.257740  0.228077  0.123431  0.925286  0.193137  1.0
+: 1 -1.100878 -3.996840 -4.285843 -4.506579 -4.022377 -3.234368  ...  0.555784  0.476333  0.773820  1.119621 -1.436250  1.0
+: 2 -0.567088 -2.593450 -3.874230 -4.584095 -4.187449 -3.151462  ... -0.713683 -0.532197  0.321097  0.904227 -0.421797  1.0
+: 3  0.490473 -1.914407 -3.616364 -4.318823 -4.268016 -3.881110  ...  0.952074  0.990133  1.086798  1.403011 -0.383564  1.0
+: 4  0.800232 -0.874252 -2.384761 -3.973292 -4.338224 -3.802422  ...  1.277392  0.960304  0.971020  1.614392  1.421456  1.0
+:
+: [5 rows x 141 columns]
+
+
+* DONE Data Preperation
+
+- [X] Label data must be selected from the last column of the dataframe.
+- [X] Data values must be selected from the rest of the dataframe. (Excluding the last column)
+- [X] Create a train/test split of 80% training data with 20% testing data.
+
+#+begin_src python :session :results output
+labels = raw_data[:, -1]
+
+data = raw_data[:, 0:-1]
+
+train_data, test_data, train_labels, test_labels = train_test_split(
+    data, labels, test_size=0.2, random_state=21
+)
+#+end_src
+
+#+begin_src python :session :results output
+min_val = tf.reduce_min(train_data)
+max_val = tf.reduce_max(train_data)
+
+train_data = (train_data - min_val) / (max_val - min_val)
+test_data = (test_data - min_val) / (max_val - min_val)
+
+train_data = tf.cast(train_data, tf.float32)
+test_data = tf.cast(test_data, tf.float32)
+#+end_src
+
+#+begin_src python :session :results output
+train_labels = train_labels.astype(bool)
+test_labels = test_labels.astype(bool)
+
+normal_train_data = train_data[train_labels]
+normal_test_data = test_data[test_labels]
+
+anamolous_train_data = train_data[~train_labels]
+anamolous_test_data = test_data[~test_labels]
+#+end_src
+
+
+* TODO Plotting and Modelling
+
+Issues with plotting are persisting ragardless of my efforts. Further research must be done in order to
+amend this issue, and to successfully create a workflow similar to =Jupyter=. Months ago I was able to utilize
+=org-mode= in a fashion which reflected the capabilities of =Jupyter= and more. However, at this current stage
+I need to figure out the necessary configuration to accomplish this. Whether this is a matter of installing a
+package or simply modifying the header arguments is still unclear.
+
+
+** TODO Plotting Initiation
+
+#+begin_src python :session :results file
+plt.grid()
+plt.plot(np.arange(140), normal_train_data[0])
+plt.title("Normal ECG")
+fname = './images/normal_ecg.png'
+plt.savefig(fname)
+return fname
+#+end_src
+
+#+RESULTS:
+[[file:]]
+
+As we can see there is no inline plotting of matplotlib outputs which is typically expected within a
+data science workflow. The first issue arises when utilizing the ~plt.show()~ method in order to in functionality
+return an image of the figure in question. Describing this issue is simple, nothing is returned,
+
+#+begin_src python :session :results file
+plt.grid()
+plt.plot(np.arange(140), anamolous_train_data[0])
+plt.title("Anamolous ECG")
+faname = 'images/anamolous_ecg.png'
+plt.savefig(faname)
+return faname
+#+end_src
+
+#+begin_src python :session :results output
+class AnomalyDetector(Model):
+    def __init__(self):
+        super(AnomalyDetector, self).__init__()
+        self.encoder = tf.keras.Sequential([
+            layers.Dense(32, activation='relu'),
+            layers.Dense(16, activation='relu'),
+            layers.Dense(8, activation='relu')
+        ])
+
+        self.decoder = tf.keras.Sequential([
+            layers.Dense(16, activation='relu'),
+            layers.Dense(32, activation='relu'),
+            layers.Dense(140, activation='sigmoid')
+        ])
+
+    def call(self, x):
+        encoded = self.encoder(x)
+        decoded = self.decoder(encoded)
+        return decoded
+
+autoencoder = AnomalyDetector()
+#+end_src
+
+#+begin_src python :session :results output
+autoencoder.compile(optimizer='adam', loss='mae')
+#+end_src
+
+#+begin_src python :session :results output
+history = autoencoder.fit(normal_train_data, normal_train_data,
+                        epochs=20,
+                        batch_size=512,
+                        validation_data=(test_data, test_data),
+                        shuffle=True)
+#+end_src
+
+
+
+
+#+begin_src python :session :results output file
+plt.plot(history.history["loss"], label = "Training Loss")
+plt.plot(history.history["val_loss"], label = "Validation Loss")
+plt.legend()
+fhname = 'images/history.png'
+plt.savefig(fhname)
+return fhname
+#+end_src
+
+#+begin_src python :session :results output file
+encoded_data = autoencoder.encoder(normal_test_data).numpy()
+decoded_data = autoencoder.decoder(encoded_data).numpy()
+
+plt.plot(normal_test_data[0], 'b')
+plt.plot(decoded_data[0], 'r')
+plt.fill_between(np.arange(140), decoded_data[0], normal_test_data[0], color='lightcoral')
+plt.legend(labels=["Input", "Reconstruction", "Error"])
+frecon = 'images/reconstruction.png'
+plt.savefig(frecon)
+return frecon
+#+end_src
+
+#+begin_src python :session :results output file
+reconstructions = autoencoder.predict(normal_train_data)
+train_loss = tf.keras.losses.mae(reconstructions, normal_train_data)
+
+plt.hist(train_loss[None, :], bins=50)
+plt.xlabel("Train Loss")
+plt.ylabel("No of Examples")
+freconerr = 'images/reconstruction_error.png'
+plt.savefig(freconerr)
+return freconerr
+#+end_src
+
+#+begin_src python :session :results output
+threshold = np.mean(train_loss) + np.std(train_loss)
+print("Threshold: ", threshold)
+#+end_src
+
+#+begin_src python :session :results output file
+reconstructions = autoencoder.predict(anamolous_test_data)
+test_loss = tf.keras.losses.mae(reconstructions, anamolous_test_data)
+
+plt.hist(test_loss[None, :], bins=50)
+plt.xlabel("Test loss")
+plt.ylabel("No of examples")
+fthresh = 'images/reconstruction_error_w_thresh.png'
+plt.savefig(fthresh)
+return fthresh
+#+end_src
+
+#+begin_src python :session :results output
+def predict(model, data, threshold):
+    reconstructions = model(data)
+    loss = tf.keras.losses.mae(reconstructions, data)
+    return tf.math.less(loss, threshold)
+
+def print_stats(predictions, labels):
+    print("Accuracy = {}".format(accuracy_score(labels, predictions)))
+    print("Precision = {}".format(precision_score(labels, predictions)))
+    print("Recall = {}".format(recall_score(labels, predictions)))
+#+end_src
+
+#+begin_src python :session :results output
+preds = predict(autoencoder, test_data, threshold)
+print_stats(preds, test_labels)
+#+end_src
