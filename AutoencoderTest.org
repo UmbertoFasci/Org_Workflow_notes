@@ -37,7 +37,7 @@ print(dataframe.head())
 : [5 rows x 141 columns]
 
 
-* DONE Data Preperation
+* DONE Data Preperation [100%]
 
 - [X] Label data must be selected from the last column of the dataframe.
 - [X] Data values must be selected from the rest of the dataframe. (Excluding the last column)
@@ -101,7 +101,7 @@ return fname
 
 As we can see there is no inline plotting of matplotlib outputs which is typically expected within a
 data science workflow. The first issue arises when utilizing the ~plt.show()~ method in order to in functionality
-return an image of the figure in question. Describing this issue is simple, nothing is returned,
+return an image of the figure in question. Describing this issue is simple, nothing is returned.
 
 #+begin_src python :session :results file
 plt.grid()
