@@ -85,7 +85,9 @@ I need to figure out the necessary configuration to accomplish this. Whether thi
 package or simply modifying the header arguments is still unclear.
 
 
-** TODO Plotting Initiation
+** TODO Plotting
+
+*** TODO Normal ECG Plot
 
 #+begin_src python :session :results file
 plt.grid()
@@ -103,6 +105,8 @@ As we can see there is no inline plotting of matplotlib outputs which is typical
 data science workflow. The first issue arises when utilizing the ~plt.show()~ method in order to in functionality
 return an image of the figure in question. Describing this issue is simple, nothing is returned.
 
+*** TODO Anomalous ECG Plot
+
 #+begin_src python :session :results file
 plt.grid()
 plt.plot(np.arange(140), anamolous_train_data[0])
@@ -111,6 +115,13 @@ faname = 'images/anamolous_ecg.png'
 plt.savefig(faname)
 return faname
 #+end_src
+
+
+** TODO Anomaly Detector Model
+
+The functionality of model definition, compiliation, and fitting are still unclear as they have yet to be tested.
+However, during previous experiments I have noticed an unacceptable output of markup artifcats during the model
+fit sequence which is an eyesore. More research will be completed in order to remedy this aesthetic issue.
 
 #+begin_src python :session :results output
 class AnomalyDetector(Model):
@@ -148,7 +159,7 @@ history = autoencoder.fit(normal_train_data, normal_train_data,
                         shuffle=True)
 #+end_src
 
-
+** TODO Model Result Plots
 
 
 #+begin_src python :session :results output file
