@@ -160,9 +160,13 @@ class AnomalyDetector(Model):
 autoencoder = AnomalyDetector()
 #+end_src
 
+#+RESULTS:
+
 #+begin_src python :session :results output
 autoencoder.compile(optimizer='adam', loss='mae')
 #+end_src
+
+#+RESULTS:
 
 #+begin_src python :session :results output
 history = autoencoder.fit(normal_train_data, normal_train_data,
@@ -171,6 +175,50 @@ history = autoencoder.fit(normal_train_data, normal_train_data,
                         validation_data=(test_data, test_data),
                         shuffle=True)
 #+end_src
+
+#+RESULTS:
+#+begin_example
+Epoch 1/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01725/5 [==============================] - 0s 7ms/step - loss: 0.0172 - val_loss: 0.0288
+Epoch 2/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01725/5 [==============================] - 0s 4ms/step - loss: 0.0171 - val_loss: 0.0287
+Epoch 3/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01735/5 [==============================] - 0s 4ms/step - loss: 0.0170 - val_loss: 0.0287
+Epoch 4/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01725/5 [==============================] - 0s 4ms/step - loss: 0.0169 - val_loss: 0.0287
+Epoch 5/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01715/5 [==============================] - 0s 4ms/step - loss: 0.0168 - val_loss: 0.0290
+Epoch 6/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01625/5 [==============================] - 0s 4ms/step - loss: 0.0168 - val_loss: 0.0287
+Epoch 7/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01675/5 [==============================] - 0s 4ms/step - loss: 0.0167 - val_loss: 0.0288
+Epoch 8/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01725/5 [==============================] - 0s 4ms/step - loss: 0.0167 - val_loss: 0.0288
+Epoch 9/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01675/5 [==============================] - 0s 4ms/step - loss: 0.0166 - val_loss: 0.0288
+Epoch 10/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01635/5 [==============================] - 0s 4ms/step - loss: 0.0166 - val_loss: 0.0288
+Epoch 11/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01715/5 [==============================] - 0s 4ms/step - loss: 0.0165 - val_loss: 0.0287
+Epoch 12/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01645/5 [==============================] - 0s 4ms/step - loss: 0.0165 - val_loss: 0.0288
+Epoch 13/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01595/5 [==============================] - 0s 4ms/step - loss: 0.0165 - val_loss: 0.0287
+Epoch 14/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01635/5 [==============================] - 0s 4ms/step - loss: 0.0164 - val_loss: 0.0288
+Epoch 15/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01605/5 [==============================] - 0s 4ms/step - loss: 0.0164 - val_loss: 0.0287
+Epoch 16/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01655/5 [==============================] - 0s 4ms/step - loss: 0.0164 - val_loss: 0.0289
+Epoch 17/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01675/5 [==============================] - 0s 4ms/step - loss: 0.0163 - val_loss: 0.0287
+Epoch 18/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01645/5 [==============================] - 0s 5ms/step - loss: 0.0163 - val_loss: 0.0288
+Epoch 19/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01665/5 [==============================] - 0s 5ms/step - loss: 0.0162 - val_loss: 0.0289
+Epoch 20/20
+1/5 [=====>........................] - ETA: 0s - loss: 0.01605/5 [==============================] - 0s 4ms/step - loss: 0.0162 - val_loss: 0.0287
+#+end_example
 
 ** TODO Model Result Plots
 
@@ -182,6 +230,9 @@ plt.legend()
 plt.savefig('images/history.png')
 print('images/history.png')
 #+end_src
+
+#+RESULTS:
+[[file:images/history.png]]
 
 #+begin_src python :session :results output file
 encoded_data = autoencoder.encoder(normal_test_data).numpy()
@@ -195,6 +246,9 @@ plt.savefig('images/reconstruction.png')
 print('images/reconstruction.png')
 #+end_src
 
+#+RESULTS:
+[[file:images/reconstruction.png]]
+
 #+begin_src python :session :results output file
 reconstructions = autoencoder.predict(normal_train_data)
 train_loss = tf.keras.losses.mae(reconstructions, normal_train_data)
@@ -206,10 +260,17 @@ plt.savefig('images/reconstruction_error.png')
 print('images/reconstruction_error.png')
 #+end_src
 
+#+RESULTS:
+[[file: 1/74 [..............................] - ETA: 2s74/74 [==============================] - 0s 345us/step
+images/reconstruction_error.png]]
+
 #+begin_src python :session :results output
 threshold = np.mean(train_loss) + np.std(train_loss)
 print("Threshold: ", threshold)
 #+end_src
+
+#+RESULTS:
+: Threshold:  0.032391436
 
 #+begin_src python :session :results output file
 reconstructions = autoencoder.predict(anomalous_test_data)
@@ -221,6 +282,10 @@ plt.ylabel("No of examples")
 plt.savefig('images/reconstruction_error_w_thresh.png')
 print('images/reconstruction_error_w_thresh.png')
 #+end_src
+
+#+RESULTS:
+[[file: 1/14 [=>............................] - ETA: 0s14/14 [==============================] - 0s 387us/step
+images/reconstruction_error_w_thresh.png]]
 
 #+begin_src python :session :results output
 def predict(model, data, threshold):
@@ -234,7 +299,14 @@ def print_stats(predictions, labels):
     print("Recall = {}".format(recall_score(labels, predictions)))
 #+end_src
 
+#+RESULTS:
+
 #+begin_src python :session :results output
 preds = predict(autoencoder, test_data, threshold)
 print_stats(preds, test_labels)
 #+end_src
+
+#+RESULTS:
+: Accuracy = 0.945
+: Precision = 0.9922027290448343
+: Recall = 0.9089285714285714
