@@ -97,7 +97,7 @@ I need to figure out the necessary configuration to accomplish this. Whether thi
 package or simply modifying the header arguments is still unclear.
 
 
-** TODO Plotting
+** DONE Plotting
 
 *** DONE Normal ECG Plot
 
