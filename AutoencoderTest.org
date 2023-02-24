@@ -17,6 +17,8 @@ from tensorflow.keras.datasets import fashion_mnist
 from tensorflow.keras.models import Model
 #+end_src
 
+#+RESULTS:
+
 
 * DONE Data Import (ECG data)
 
@@ -27,12 +29,12 @@ print(dataframe.head())
 #+end_src
 
 #+RESULTS:
-:         0         1         2         3         4         5    ...       135       136       137       138       139  140
-: 0 -0.112522 -2.827204 -3.773897 -4.349751 -4.376041 -3.474986  ...  0.257740  0.228077  0.123431  0.925286  0.193137  1.0
-: 1 -1.100878 -3.996840 -4.285843 -4.506579 -4.022377 -3.234368  ...  0.555784  0.476333  0.773820  1.119621 -1.436250  1.0
-: 2 -0.567088 -2.593450 -3.874230 -4.584095 -4.187449 -3.151462  ... -0.713683 -0.532197  0.321097  0.904227 -0.421797  1.0
-: 3  0.490473 -1.914407 -3.616364 -4.318823 -4.268016 -3.881110  ...  0.952074  0.990133  1.086798  1.403011 -0.383564  1.0
-: 4  0.800232 -0.874252 -2.384761 -3.973292 -4.338224 -3.802422  ...  1.277392  0.960304  0.971020  1.614392  1.421456  1.0
+:         0         1         2         3         4         5         6    ...       134       135       136       137       138       139  140
+: 0 -0.112522 -2.827204 -3.773897 -4.349751 -4.376041 -3.474986 -2.181408  ...  0.578621  0.257740  0.228077  0.123431  0.925286  0.193137  1.0
+: 1 -1.100878 -3.996840 -4.285843 -4.506579 -4.022377 -3.234368 -1.566126  ...  0.724046  0.555784  0.476333  0.773820  1.119621 -1.436250  1.0
+: 2 -0.567088 -2.593450 -3.874230 -4.584095 -4.187449 -3.151462 -1.742940  ... -0.021919 -0.713683 -0.532197  0.321097  0.904227 -0.421797  1.0
+: 3  0.490473 -1.914407 -3.616364 -4.318823 -4.268016 -3.881110 -2.993280  ...  0.842069  0.952074  0.990133  1.086798  1.403011 -0.383564  1.0
+: 4  0.800232 -0.874252 -2.384761 -3.973292 -4.338224 -3.802422 -2.534510  ...  1.371682  1.277392  0.960304  0.971020  1.614392  1.421456  1.0
 :
 : [5 rows x 141 columns]
 
@@ -57,6 +59,8 @@ train_data, test_data, train_labels, test_labels = train_test_split(
 )
 #+end_src
 
+#+RESULTS:
+
 #+begin_src python :session :results output
 min_val = tf.reduce_min(train_data)
 max_val = tf.reduce_max(train_data)
@@ -68,6 +72,8 @@ train_data = tf.cast(train_data, tf.float32)
 test_data = tf.cast(test_data, tf.float32)
 #+end_src
 
+#+RESULTS:
+
 #+begin_src python :session :results output
 train_labels = train_labels.astype(bool)
 test_labels = test_labels.astype(bool)
@@ -78,6 +84,8 @@ normal_test_data = test_data[test_labels]
 anamolous_train_data = train_data[~train_labels]
 anamolous_test_data = test_data[~test_labels]
 #+end_src
+
+#+RESULTS:
 
 
 * TODO Plotting and Modelling
@@ -93,17 +101,16 @@ package or simply modifying the header arguments is still unclear.
 
 *** TODO Normal ECG Plot
 
-#+begin_src python :session :results file
+#+begin_src python :session :results output file
 plt.grid()
 plt.plot(np.arange(140), normal_train_data[0])
 plt.title("Normal ECG")
-fname = './images/normal_ecg.png'
-plt.savefig(fname)
-return fname
+plt.savefig('images/normal_ecg.png')
+print('images/normal_ecg.png')
 #+end_src
 
 #+RESULTS:
-[[file:]]
+[[file:images/normal_ecg.png]]
 
 As we can see there is no inline plotting of matplotlib outputs which is typically expected within a
 data science workflow. The first issue arises when utilizing the ~plt.show()~ method in order to in functionality
@@ -111,14 +118,16 @@ return an image of the figure in question. Describing this issue is simple, noth
 
 *** TODO Anomalous ECG Plot
 
-#+begin_src python :session :results file
+#+begin_src python :session :results output file
 plt.grid()
 plt.plot(np.arange(140), anamolous_train_data[0])
 plt.title("Anamolous ECG")
-faname = 'images/anamolous_ecg.png'
-plt.savefig(faname)
-return faname
+plt.savefig('images/anomalous_ecg.png')
+print('images/anomalous_ecg.png')
 #+end_src
+
+#+RESULTS:
+[[file:images/anomalous_ecg.png]]
 
 
 ** TODO Anomaly Detector Model
