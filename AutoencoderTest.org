@@ -250,7 +250,7 @@ print('images/reconstruction.png')
 #+RESULTS:
 [[file:images/reconstruction.png]]
 
-#+begin_src python :session :results output file
+#+begin_src python :session :results output file :async
 reconstructions = autoencoder.predict(normal_train_data)
 train_loss = tf.keras.losses.mae(reconstructions, normal_train_data)
 
@@ -275,7 +275,7 @@ print("Threshold: ", threshold)
 #+RESULTS:
 : Threshold:  0.032391436
 
-#+begin_src python :session :results output file
+#+begin_src python :session :results output file :async
 reconstructions = autoencoder.predict(anomalous_test_data)
 test_loss = tf.keras.losses.mae(reconstructions, anomalous_test_data)
 
