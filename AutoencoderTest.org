@@ -37,7 +37,7 @@ print(dataframe.head())
 : [5 rows x 141 columns]
 
 
-* DONE Data Preperation [100%]
+* DONE Data Preperation
 
 - [X] Label data must be selected from the last column of the dataframe.
 - [X] Data values must be selected from the rest of the dataframe. (Excluding the last column)
