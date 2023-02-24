@@ -99,7 +99,7 @@ package or simply modifying the header arguments is still unclear.
 
 ** TODO Plotting
 
-*** TODO Normal ECG Plot
+*** DONE Normal ECG Plot
 
 #+begin_src python :session :results output file
 plt.grid()
@@ -116,7 +116,7 @@ As we can see there is no inline plotting of matplotlib outputs which is typical
 data science workflow. The first issue arises when utilizing the ~plt.show()~ method in order to in functionality
 return an image of the figure in question. Describing this issue is simple, nothing is returned.
 
-*** TODO Anomalous ECG Plot
+*** DONE Anomalous ECG Plot
 
 #+begin_src python :session :results output file
 plt.grid()
