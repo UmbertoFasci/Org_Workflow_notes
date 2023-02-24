@@ -81,8 +81,8 @@ test_labels = test_labels.astype(bool)
 normal_train_data = train_data[train_labels]
 normal_test_data = test_data[test_labels]
 
-anamolous_train_data = train_data[~train_labels]
-anamolous_test_data = test_data[~test_labels]
+anomalous_train_data = train_data[~train_labels]
+anomalous_test_data = test_data[~test_labels]
 #+end_src
 
 #+RESULTS:
@@ -120,8 +120,8 @@ return an image of the figure in question. Describing this issue is simple, noth
 
 #+begin_src python :session :results output file
 plt.grid()
-plt.plot(np.arange(140), anamolous_train_data[0])
-plt.title("Anamolous ECG")
+plt.plot(np.arange(140), anomalous_train_data[0])
+plt.title("Anomalous ECG")
 plt.savefig('images/anomalous_ecg.png')
 print('images/anomalous_ecg.png')
 #+end_src
@@ -179,9 +179,8 @@ history = autoencoder.fit(normal_train_data, normal_train_data,
 plt.plot(history.history["loss"], label = "Training Loss")
 plt.plot(history.history["val_loss"], label = "Validation Loss")
 plt.legend()
-fhname = 'images/history.png'
-plt.savefig(fhname)
-return fhname
+plt.savefig('images/history.png')
+print('images/history.png')
 #+end_src
 
 #+begin_src python :session :results output file
@@ -192,9 +191,8 @@ plt.plot(normal_test_data[0], 'b')
 plt.plot(decoded_data[0], 'r')
 plt.fill_between(np.arange(140), decoded_data[0], normal_test_data[0], color='lightcoral')
 plt.legend(labels=["Input", "Reconstruction", "Error"])
-frecon = 'images/reconstruction.png'
-plt.savefig(frecon)
-return frecon
+plt.savefig('images/reconstruction.png')
+print('images/reconstruction.png')
 #+end_src
 
 #+begin_src python :session :results output file
@@ -204,9 +202,8 @@ train_loss = tf.keras.losses.mae(reconstructions, normal_train_data)
 plt.hist(train_loss[None, :], bins=50)
 plt.xlabel("Train Loss")
 plt.ylabel("No of Examples")
-freconerr = 'images/reconstruction_error.png'
-plt.savefig(freconerr)
-return freconerr
+plt.savefig('images/reconstruction_error.png')
+print('images/reconstruction_error.png')
 #+end_src
 
 #+begin_src python :session :results output
@@ -215,15 +212,14 @@ print("Threshold: ", threshold)
 #+end_src
 
 #+begin_src python :session :results output file
-reconstructions = autoencoder.predict(anamolous_test_data)
-test_loss = tf.keras.losses.mae(reconstructions, anamolous_test_data)
+reconstructions = autoencoder.predict(anomalous_test_data)
+test_loss = tf.keras.losses.mae(reconstructions, anomalous_test_data)
 
 plt.hist(test_loss[None, :], bins=50)
 plt.xlabel("Test loss")
 plt.ylabel("No of examples")
-fthresh = 'images/reconstruction_error_w_thresh.png'
-plt.savefig(fthresh)
-return fthresh
+plt.savefig('images/reconstruction_error_w_thresh.png')
+print('images/reconstruction_error_w_thresh.png')
 #+end_src
 
 #+begin_src python :session :results output
