@@ -43,6 +43,10 @@ print(dataframe.head())
 - [X] Data values must be selected from the rest of the dataframe. (Excluding the last column)
 - [X] Create a train/test split of 80% training data with 20% testing data.
 
+Package and data imports functions as expected. The only aspect I wish to configure which also affects this section is as follows.
+Concerning the source block wrappers, I wish to configure them in a way that will have them hidden when the cursor is not within
+the source block. I am not aware of how to achieve this feature, that said, I will have to learn on how to configure that.
+
 #+begin_src python :session :results output
 labels = raw_data[:, -1]
 
