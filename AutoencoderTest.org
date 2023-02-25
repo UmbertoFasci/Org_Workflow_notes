@@ -101,7 +101,7 @@ package or simply modifying the header arguments is still unclear.
 
 *** DONE Normal ECG Plot
 
-#+begin_src python :session :results output file
+#+begin_src python :session :results output file graphics
 plt.grid()
 plt.plot(np.arange(140), normal_train_data[0])
 plt.title("Normal ECG")
@@ -118,7 +118,7 @@ return an image of the figure in question. Describing this issue is simple, noth
 
 *** DONE Anomalous ECG Plot
 
-#+begin_src python :session :results output file
+#+begin_src python :session :results output file graphics
 plt.grid()
 plt.plot(np.arange(140), anomalous_train_data[0])
 plt.title("Anomalous ECG")
@@ -224,7 +224,7 @@ Epoch 20/20
 ** TODO Model Result Plots
 
 
-#+begin_src python :session :results output file
+#+begin_src python :session :results output file graphics
 plt.plot(history.history["loss"], label = "Training Loss")
 plt.plot(history.history["val_loss"], label = "Validation Loss")
 plt.legend()
@@ -235,7 +235,7 @@ print('images/history.png')
 #+RESULTS:
 [[file:images/history.png]]
 
-#+begin_src python :session :results output file
+#+begin_src python :session :results output file graphics
 encoded_data = autoencoder.encoder(normal_test_data).numpy()
 decoded_data = autoencoder.decoder(encoded_data).numpy()
 
