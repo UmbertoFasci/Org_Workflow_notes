@@ -29,12 +29,12 @@ print(dataframe.head())
 #+end_src
 
 #+RESULTS:
-:         0         1         2         3         4         5         6         7    ...       133       134       135       136       137       138       139  140
-: 0 -0.112522 -2.827204 -3.773897 -4.349751 -4.376041 -3.474986 -2.181408 -1.818286  ...  0.796958  0.578621  0.257740  0.228077  0.123431  0.925286  0.193137  1.0
-: 1 -1.100878 -3.996840 -4.285843 -4.506579 -4.022377 -3.234368 -1.566126 -0.992258  ...  0.787490  0.724046  0.555784  0.476333  0.773820  1.119621 -1.436250  1.0
-: 2 -0.567088 -2.593450 -3.874230 -4.584095 -4.187449 -3.151462 -1.742940 -1.490659  ...  0.311377 -0.021919 -0.713683 -0.532197  0.321097  0.904227 -0.421797  1.0
-: 3  0.490473 -1.914407 -3.616364 -4.318823 -4.268016 -3.881110 -2.993280 -1.671131  ...  0.600345  0.842069  0.952074  0.990133  1.086798  1.403011 -0.383564  1.0
-: 4  0.800232 -0.874252 -2.384761 -3.973292 -4.338224 -3.802422 -2.534510 -1.783423  ...  1.059025  1.371682  1.277392  0.960304  0.971020  1.614392  1.421456  1.0
+:         0         1         2         3         4         5         6         7         8    ...       132       133       134       135       136       137       138       139  140
+: 0 -0.112522 -2.827204 -3.773897 -4.349751 -4.376041 -3.474986 -2.181408 -1.818286 -1.250522  ...  0.933541  0.796958  0.578621  0.257740  0.228077  0.123431  0.925286  0.193137  1.0
+: 1 -1.100878 -3.996840 -4.285843 -4.506579 -4.022377 -3.234368 -1.566126 -0.992258 -0.754680  ...  0.656881  0.787490  0.724046  0.555784  0.476333  0.773820  1.119621 -1.436250  1.0
+: 2 -0.567088 -2.593450 -3.874230 -4.584095 -4.187449 -3.151462 -1.742940 -1.490659 -1.183580  ...  0.531452  0.311377 -0.021919 -0.713683 -0.532197  0.321097  0.904227 -0.421797  1.0
+: 3  0.490473 -1.914407 -3.616364 -4.318823 -4.268016 -3.881110 -2.993280 -1.671131 -1.333884  ...  0.499111  0.600345  0.842069  0.952074  0.990133  1.086798  1.403011 -0.383564  1.0
+: 4  0.800232 -0.874252 -2.384761 -3.973292 -4.338224 -3.802422 -2.534510 -1.783423 -1.594450  ...  0.958434  1.059025  1.371682  1.277392  0.960304  0.971020  1.614392  1.421456  1.0
 :
 : [5 rows x 141 columns]
 
@@ -73,6 +73,13 @@ test_data = tf.cast(test_data, tf.float32)
 #+end_src
 
 #+RESULTS:
+: Metal device set to: Apple M1 Max
+:
+: systemMemory: 32.00 GB
+: maxCacheSize: 10.67 GB
+:
+: 2023-02-25 18:26:44.667076: I tensorflow/core/common_runtime/pluggable_device/pluggable_device_factory.cc:306] Could not identify NUMA node of platform GPU ID 0, defaulting to 0. Your kernel may not have been built with NUMA support.
+: 2023-02-25 18:26:44.667210: I tensorflow/core/common_runtime/pluggable_device/pluggable_device_factory.cc:272] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 0 MB memory) -> physical PluggableDevice (device: 0, name: METAL, pci bus id: <undefined>)
 
 #+begin_src python :session :results output
 train_labels = train_labels.astype(bool)
@@ -168,7 +175,7 @@ autoencoder.compile(optimizer='adam', loss='mae')
 
 #+RESULTS:
 
-#+begin_src python :session :results output :async
+#+begin_src python :session :results output
 history = autoencoder.fit(normal_train_data, normal_train_data,
                         epochs=20,
                         batch_size=512,
@@ -178,47 +185,19 @@ history = autoencoder.fit(normal_train_data, normal_train_data,
 
 #+RESULTS:
 #+begin_example
-2023-02-24 17:13:07.778954: W tensorflow/tsl/platform/profile_utils/cpu_utils.cc:128] Failed to get CPU frequency: 0 Hz
 Epoch 1/20
-5/5 [==============================] - 0s 19ms/step - loss: 0.0580 - val_loss: 0.0537
-Epoch 2/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0569 - val_loss: 0.0527
-Epoch 3/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0557 - val_loss: 0.0517
-Epoch 4/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0544 - val_loss: 0.0506
-Epoch 5/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0530 - val_loss: 0.0494
-Epoch 6/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0513 - val_loss: 0.0481
-Epoch 7/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0494 - val_loss: 0.0467
-Epoch 8/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0472 - val_loss: 0.0453
-Epoch 9/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0448 - val_loss: 0.0438
-Epoch 10/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0422 - val_loss: 0.0425
-Epoch 11/20
-5/5 [==============================] - 0s 5ms/step - loss: 0.0395 - val_loss: 0.0414
-Epoch 12/20
-5/5 [==============================] - 0s 5ms/step - loss: 0.0368 - val_loss: 0.0406
-Epoch 13/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0344 - val_loss: 0.0399
-Epoch 14/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0322 - val_loss: 0.0395
-Epoch 15/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0304 - val_loss: 0.0392
-Epoch 16/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0290 - val_loss: 0.0389
-Epoch 17/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0279 - val_loss: 0.0385
-Epoch 18/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0271 - val_loss: 0.0380
-Epoch 19/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0264 - val_loss: 0.0374
-Epoch 20/20
-5/5 [==============================] - 0s 4ms/step - loss: 0.0258 - val_loss: 0.0370
+2023-02-25 18:28:23.610885: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
+2023-02-25 18:28:23.610922: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
+2023-02-25 18:28:23.611238: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
+2023-02-25 18:28:23.611252: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
+2023-02-25 18:28:23.611501: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
+2023-02-25 18:28:23.611514: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
+2023-02-25 18:28:23.611756: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
+2023-02-25 18:28:23.611768: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
+2023-02-25 18:28:23.611991: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
+2023-02-25 18:28:23.612003: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
+2023-02-25 18:28:23.612132: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
+2023-02-25 18:28:23.612144: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x11ce5f540
 #+end_example
 
 ** TODO Model Result Plots
