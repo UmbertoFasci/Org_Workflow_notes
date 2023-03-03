@@ -112,12 +112,14 @@ package or simply modifying the header arguments is still unclear.
 plt.grid()
 plt.plot(np.arange(140), normal_train_data[0])
 plt.title("Normal ECG")
+plt.style.use('dark_background')
 plt.savefig('images/normal_ecg.png')
 print('images/normal_ecg.png')
 #+end_src
 
 #+RESULTS:
 [[file:images/normal_ecg.png]]
+
 
 As we can see there is no inline plotting of matplotlib outputs which is typically expected within a
 data science workflow. The first issue arises when utilizing the ~plt.show()~ method in order to in functionality
@@ -135,6 +137,7 @@ print('images/anomalous_ecg.png')
 
 #+RESULTS:
 [[file:images/anomalous_ecg.png]]
+
 
 
 ** TODO Anomaly Detector Model
@@ -194,8 +197,6 @@ plt.savefig('images/history.png')
 print('images/history.png')
 #+end_src
 
-#+RESULTS:
-[[file:images/history.png]]
 
 #+begin_src python :session :results output file graphics
 encoded_data = autoencoder.encoder(normal_test_data).numpy()
@@ -209,8 +210,6 @@ plt.savefig('images/reconstruction.png')
 print('images/reconstruction.png')
 #+end_src
 
-#+RESULTS:
-[[file:images/reconstruction.png]]
 
 #+begin_src python :session :results output file :async
 reconstructions = autoencoder.predict(normal_train_data)
