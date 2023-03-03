@@ -1,0 +1,24 @@
+#+title: Simple_py_test
+
+
+#+begin_src python :session :results output
+print("Hello World")
+#+end_src
+
+#+RESULTS:
+: Hello World
+
+#+begin_src python :session :results output
+import tensorflow as tf
+print(tf.__version__)
+#+end_src
+
+#+RESULTS:
+: 2.11.0
+
+Clearly, org-babel is identifying the proper python environment which I have specified through the ~conda-env-activate-path~ command.
+However, I face major issues when I begin a model fit sequence:
+
+<#+begin_quote
+tensorflow/tsl/platform/profile_utils/cpu_utils.cc:128] Failed to get CPU frequency: 0 Hz
+#+end_quote
