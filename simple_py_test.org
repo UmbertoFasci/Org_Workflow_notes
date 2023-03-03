@@ -22,3 +22,89 @@ However, I face major issues when I begin a model fit sequence:
 <#+begin_quote
 tensorflow/tsl/platform/profile_utils/cpu_utils.cc:128] Failed to get CPU frequency: 0 Hz
 #+end_quote
+
+
+* Test with tensorflow-metal
+
+This is a conda env which was been configured and installed following the official methods for MacOS M1 devices.
+
+Following the beginner tutorial provided by TensorFlow I will test whether or not this is functioning as it should.
+
+#+begin_src python :session :results output
+mnist = tf.keras.datasets.mnist
+
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+#+end_src
+
+#+RESULTS:
+
+#+begin_src python :session :results output
+model = tf.keras.models.Sequential([
+  tf.keras.layers.Flatten(input_shape=(28, 28)),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dropout(0.2),
+  tf.keras.layers.Dense(10)
+])
+#+end_src
+
+#+RESULTS:
+: Metal device set to: Apple M1 Max
+:
+: systemMemory: 32.00 GB
+: maxCacheSize: 10.67 GB
+:
+: 2023-03-02 21:43:15.396736: I tensorflow/core/common_runtime/pluggable_device/pluggable_device_factory.cc:306] Could not identify NUMA node of platform GPU ID 0, defaulting to 0. Your kernel may not have been built with NUMA support.
+: 2023-03-02 21:43:15.397208: I tensorflow/core/common_runtime/pluggable_device/pluggable_device_factory.cc:272] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 0 MB memory) -> physical PluggableDevice (device: 0, name: METAL, pci bus id: <undefined>)
+
+#+begin_src python :session :results output value
+predictions = model(x_train[:1]).numpy()
+predictions
+#+end_src
+
+#+RESULTS:
+| -0.19085966 | -0.14289963 | -0.05832657 | 0.31442526 | 0.60138214 | 0.50763845 | 0.15503025 | 0.415468 | 0.06775406 | 0.19404125 |
+
+
+#+begin_src python :session :results output value
+tf.nn.softmax(predictions).numpy()
+#+end_src
+
+#+RESULTS:
+| 0.06631779 | 0.0695759 | 0.07571613 | 0.10991894 | 0.14645234 | 0.1333472 | 0.09372342 | 0.12160595 | 0.08589038 | 0.09745191 |
+
+
+#+begin_src python :session :results output
+loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+#+end_src
+
+#+RESULTS:
+
+#+begin_src python :session :results output value
+loss_fn(y_train[:1], predictions).numpy()
+#+end_src
+
+#+RESULTS:
+: 2.0147989
+
+
+#+begin_src python :session :results output
+model.compile(optimizer='adam',
+              loss=loss_fn,
+              metrics=['accuracy'])
+#+end_src
+
+#+RESULTS:
+
+#+begin_src python :session :results output
+model.fit(x_train, y_train, epochs=5)
+#+end_src
+
+#+begin_quote
+#+RESULTS:
+: Epoch 1/5
+: 2023-03-02 21:48:33.260902: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x12f763580
+: 2023-03-02 21:48:33.260936: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x12f763580
+: 2023-03-02 21:48:33.261446: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x12f763580
+: 2023-03-02 21:48:33.261463: W tensorflow/core/framework/op_kernel.cc:1830] OP_REQUIRES failed at xla_ops.cc:418 : NOT_FOUND: could not find registered platform with id: 0x12f763580
+#+end_quote
