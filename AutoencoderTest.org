@@ -140,7 +140,7 @@ print('images/anomalous_ecg.png')
 
 
 
-** TODO Anomaly Detector Model
+** DONE Anomaly Detector Model
 
 The functionality of model definition, compiliation, and fitting are still unclear as they have yet to be tested.
 However, during previous experiments I have noticed an unacceptable output of markup artifcats during the model
